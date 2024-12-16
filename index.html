@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全屏幻灯片示例</title>
     <style>
-        body,
-        html {
+        body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
         }
 
-       .slider-container {
+        .slider-container {
             display: flex;
             flex-direction: column;
             height: 100vh;
             transition: transform 0.5s ease;
         }
 
-       .slide {
+        .slide {
             height: 100vh;
             width: 100%;
             display: flex;
@@ -30,42 +28,30 @@
             font-size: 2em;
             color: white;
             text-align: center;
-            cursor: pointer;
         }
 
-       .slide.red {
+        .slide.red {
             background-color: red;
         }
 
-       .slide.green {
+        .slide.green {
             background-color: green;
         }
 
-       .slide.blue {
+        .slide.blue {
             background-color: blue;
         }
 
-       .hidden {
-            display: none;
-        }
-
-       .slide-text {
+        .hidden {
             display: none;
         }
     </style>
 </head>
-
 <body>
     <div id="slider" class="slider-container">
-        <div class="slide red">
-            <div class="slide-text">红色背景</div>
-        </div>
-        <div class="slide green hidden">
-            <div class="slide-text">绿色背景</div>
-        </div>
-        <div class="slide blue hidden">
-            <div class="slide-text">蓝色背景</div>
-        </div>
+        <div class="slide red">红色背景</div>
+        <div class="slide green hidden">绿色背景</div>
+        <div class="slide blue hidden">蓝色背景</div>
     </div>
 
     <script>
@@ -86,20 +72,32 @@
             currentSlide = index;
         }
 
-        slides.forEach(slide => {
-            slide.addEventListener('click', function () {
-                const slideText = this.querySelector('.slide-text');
-                if (slideText.style.display === 'none') {
-                    slideText.style.display = 'block';
-                } else {
-                    slideText.style.display = 'none';
-                }
-            });
-        });
+        let yStartPos = 0;
+        let yEndPos = 0;
+
+        window.addEventListener('touchstart', handleTouchStart, false);
+        window.addEventListener('touchmove', handleTouchMove, false);
+        window.addEventListener('touchend', handleTouchEnd, false);
+
+        function handleTouchStart(event) {
+            yStartPos = event.touches[0].clientY;
+        }
+
+        function handleTouchMove(event) {
+            yEndPos = event.touches[0].clientY;
+        }
+
+        function handleTouchEnd(event) {
+            if (yStartPos > yEndPos) { // 手指向上滑动
+                goToSlide(currentSlide + 1);
+            }
+            // 重置位置
+            yStartPos = 0;
+            yEndPos = 0;
+        }
 
         // 初始化显示第一个幻灯片
         goToSlide(0);
     </script>
 </body>
-
 </html>
